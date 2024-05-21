@@ -1,7 +1,7 @@
 import { parseDateOfBirth } from '@/app/utils/dateUtils';
 import { createUser } from './createuser';
-import { isValidEmail} from '@/app/utils/emailUtils';
-import { isValidPassword} from "@/app/utils/PasswordUtils";
+import { isValidEmail } from '@/app/utils/emailUtils';
+import { isValidPassword } from '@/app/utils/PasswordUtils';
 
 interface ReqData {
   email: string;
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     if (!isValidPassword(password)) {
       throw new Error('Invalid password');
     }
-    
+
     // Create the user
     const newUser = await createUser(email, password, username, parsedDate);
 

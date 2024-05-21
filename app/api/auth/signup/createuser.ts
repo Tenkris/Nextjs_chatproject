@@ -32,7 +32,6 @@ async function createUser(
       username: newUser.username,
       dateOfBirth: newUser.dateOfBirth,
     };
-
   } catch (error: any) {
     // Handle the error and rethrow it
     throw new Error(error.message);
