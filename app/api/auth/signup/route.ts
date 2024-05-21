@@ -38,12 +38,13 @@ export async function POST(request: Request) {
       throw new Error('Invalid password');
     }
     
-    await createUser(email, password, username, parsedDate);
+    // Create the user
+    const newUser = await createUser(email, password, username, parsedDate);
 
     return Response.json(
       {
         message: 'User created successfully',
-        data: { email, password, username, parsedDate },
+        data: newUser,
       },
       { status: 201 },
     );
