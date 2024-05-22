@@ -23,8 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Link from 'next/link';
-import { GET } from '../api/auth/kuay/route';
-import { POST } from '../api/auth/signup/route';
+import { useRouter } from 'next/navigation';
 
 interface ReqData {
   email: string;
@@ -54,6 +53,8 @@ const formSchema = z.object({
 });
 
 export default function SignUpPage() {
+  const router = useRouter();
+
   const months = [
     { name: 'January', value: '01', days: 31 },
     { name: 'February', value: '02', days: 28 },
@@ -126,6 +127,7 @@ export default function SignUpPage() {
     } catch (error) {
       console.log(error);
     }
+    router.push('/sign-in');
 
     // Proceed with signup data...
   }
