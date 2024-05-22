@@ -21,15 +21,16 @@ import {
   SelectContent,
   SelectValue,
 } from '@/components/ui/select';
+import Link from 'next/link';
 
 const formSchema = z.object({
   name: z.string().min(2, {
     message: 'Username must be at least 2 characters.',
   }),
   email: z.string().email(),
-  Month: z.string().min(1),
-  Day: z.string().min(1),
-  Year: z.string().min(1),
+  Month: z.string().min(1, { message: 'Month is required' }),
+  Day: z.string().min(1 , { message: 'Day is required' }),
+  Year: z.string().min(1 , { message: 'Year is required' }),
   password: z
     .string()
     .min(8, { message: 'Password must be at least 8 characters long' })
@@ -146,10 +147,11 @@ export default function SignUpPage() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Doctor">Doctor</SelectItem>
-                            <SelectItem value="Mr">Mr</SelectItem>
-                            <SelectItem value="Mrs">Mrs</SelectItem>
-                            <SelectItem value="Miss">Miss</SelectItem>
+                            {months.map((month) => (
+                              <SelectItem key={month.value} value={month.value}>
+                                {month.name}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -176,10 +178,13 @@ export default function SignUpPage() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Doctor">Doctor</SelectItem>
-                            <SelectItem value="Mr">Mr</SelectItem>
-                            <SelectItem value="Mrs">Mrs</SelectItem>
-                            <SelectItem value="Miss">Miss</SelectItem>
+                            {Array.from({ length: 31 }, (_, i) => i + 1).map(
+                              (day) => (
+                                <SelectItem key={day} value={day.toString()}>
+                                  {day}
+                                </SelectItem>
+                              ),
+                            )}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -226,6 +231,15 @@ export default function SignUpPage() {
             </Button>
           </form>
         </Form>
+        <div className="mt-4 text-center">
+          <Link
+            href={{
+              pathname: '/sign-in',
+            }}
+          >
+            Already have an account? Sign in
+          </Link>
+        </div>
       </div>
     </div>
   );
