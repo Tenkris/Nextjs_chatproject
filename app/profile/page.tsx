@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 export default function Profile() {
   const { data: session, status } = useSession();
 
-  console.log('session', session, 'status', status); 
+  console.log('session', session, 'status', status);
 
   // When after loading success and have session, show profile
   return (

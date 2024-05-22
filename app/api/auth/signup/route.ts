@@ -6,17 +6,17 @@ import { isValidPassword } from '@/app/utils/PasswordUtils';
 interface ReqData {
   email: string;
   password: string;
-  username: string;
+  name: string;
   dateofbirth: string; // format '1990-05-21' -> year-month-day (YYYY-MM-DD)
 }
 
 export async function POST(request: Request) {
   try {
-    const { email, password, username, dateofbirth }: ReqData =
+    const { email, password, name, dateofbirth }: ReqData =
       await request.json();
 
     // Check if required fields are present
-    const requiredFields = ['email', 'password', 'username', 'dateofbirth'];
+    const requiredFields = ['email', 'password', 'name', 'dateofbirth'];
     if (requiredFields.some((field) => !eval(field))) {
       throw new Error('Missing required fields');
     }
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     }
 
     // Create the user
-    const newUser = await createUser(email, password, username, parsedDate);
+    const newUser = await createUser(email, password, name, parsedDate);
 
     return Response.json(
       {
