@@ -15,8 +15,6 @@ async function createUser(
     const userId = cuid();
     const hashedPassword = await hashPassword(password);
 
-    console.log('userId', userId, 'hashedPassword ', hashedPassword);
-
     const newUser = await prisma.user.create({
       data: {
         id: userId,
