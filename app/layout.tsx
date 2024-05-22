@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-
+import { ThemeProvider } from '../components/theme-provider';
 import SessionProvider from './components/SessionProvider';
 import { getServerSession } from 'next-auth';
 
@@ -21,7 +21,14 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SessionProvider session={session}> {children} </SessionProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SessionProvider session={session}> {children} </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
