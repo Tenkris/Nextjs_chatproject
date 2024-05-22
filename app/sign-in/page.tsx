@@ -9,6 +9,19 @@ export default function SignInPage() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
+  const handleGoogleSignIn = async (e: any) => {
+    e.preventDefault();
+    try {
+      const result: any = await signIn('google', { callbackUrl: '/profile' });
+
+      if (result.error) {
+        console.error(result.error);
+      } else router.push('/profile');
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
@@ -62,6 +75,9 @@ export default function SignInPage() {
         >
           Sign In
         </button>{' '}
+        <button type="submit" onClick={handleGoogleSignIn}>
+          Google
+        </button>
       </form>
     </div>
   );

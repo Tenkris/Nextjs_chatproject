@@ -3,7 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaClient } from '@prisma/client';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
-
+import GoogleProvider from 'next-auth/providers/google';
 const prisma = new PrismaClient();
 
 const authOptions = {
@@ -17,23 +17,27 @@ const authOptions = {
       async authorize(credentials, req) {
         if (!credentials) return null;
 
-        const user = await prisma.userProfiles.findUnique({
+        const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
         if (
           user &&
-          (await bcrypt.compare(credentials.password, user.password))
+          (await bcrypt.compare(credentials.password, user.password as string))
         ) {
           return {
             id: user.id,
-            name: user.username,
+            name: user.name,
             email: user.email,
           };
         } else {
           throw new Error('Invalid email or password');
         }
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
   adapter: PrismaAdapter(prisma),
