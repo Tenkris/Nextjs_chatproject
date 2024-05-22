@@ -5,7 +5,7 @@ import './globals.css';
 import SessionProvider from './components/SessionProvider';
 import { getServerSession } from 'next-auth';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: 'Create Next App',
