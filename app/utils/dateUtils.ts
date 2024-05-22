@@ -28,4 +28,13 @@ function parseDateOfBirth(
   return dateOfBirth;
 }
 
-export { parseDateOfBirth, InvalidDateFormatError };
+function formatDate(day: string, month: string, year: string): string {
+  // Ensure leading zeros for day and month
+  const formattedDay = day.padStart(2, '0');
+  const formattedMonth = month.padStart(2, '0');
+
+  // Return formatted date
+  return `${year}-${formattedMonth}-${formattedDay}`;
+}
+
+export { parseDateOfBirth, formatDate };

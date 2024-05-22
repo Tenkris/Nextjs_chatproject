@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { formatDate } from '@/app/utils/dateUtils';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,6 +23,15 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Link from 'next/link';
+import { GET } from '../api/auth/kuay/route';
+import { POST } from '../api/auth/signup/route';
+
+interface ReqData {
+  email: string;
+  password: string;
+  name: string;
+  dateofbirth: string; // format '1990-05-21' -> year-month-day (YYYY-MM-DD)
+}
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -29,8 +39,8 @@ const formSchema = z.object({
   }),
   email: z.string().email(),
   Month: z.string().min(1, { message: 'Month is required' }),
-  Day: z.string().min(1 , { message: 'Day is required' }),
-  Year: z.string().min(1 , { message: 'Year is required' }),
+  Day: z.string().min(1, { message: 'Day is required' }),
+  Year: z.string().min(1, { message: 'Year is required' }),
   password: z
     .string()
     .min(8, { message: 'Password must be at least 8 characters long' })
@@ -75,8 +85,49 @@ export default function SignUpPage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const {
+      name,
+      email,
+      password,
+      Day,
+      Month,
+      Year,
+    }: {
+      name: string;
+      email: string;
+      password: string;
+      Day: string;
+      Month: string;
+      Year: string;
+    } = values;
+
+    // Format the date of birth
+    const formattedDateOfBirth = formatDate(Day, Month, Year);
+
+    // Just name, email, password, and date of birth
+    const signUpData: ReqData = {
+      name,
+      email,
+      password,
+      dateofbirth: formattedDateOfBirth,
+    };
+    // call api
+    console.log(signUpData);
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(signUpData),
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+
+    // Proceed with signup data...
   }
   return (
     <div className="flex flex-col min-h-screen justify-center items-center p-4 sm:p-6 lg:p-8">
@@ -93,7 +144,7 @@ export default function SignUpPage() {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="username" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -231,7 +282,7 @@ export default function SignUpPage() {
             </Button>
           </form>
         </Form>
-        <div className="mt-4 text-center">
+        <div className="mt-4 text-start">
           <Link
             href={{
               pathname: '/sign-in',
