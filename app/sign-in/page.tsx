@@ -1,84 +1,104 @@
 'use client';
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import Link from 'next/link';
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(8, { message: 'Password must be at least 8 characters long' })
+    .regex(/[A-Z]/, {
+      message: 'Password must contain at least one uppercase letter',
+    })
+    .regex(/[a-z]/, {
+      message: 'Password must contain at least one lowercase letter',
+    })
+    .regex(/\d/, { message: 'Password must contain at least one number' }),
+});
 
 export default function SignInPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const router = useRouter();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
-  const handleGoogleSignIn = async (e: any) => {
-    e.preventDefault();
-    try {
-      const result: any = await signIn('google', { callbackUrl: '/profile' });
-
-      if (result.error) {
-        console.error(result.error);
-      } else router.push('/profile');
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    try {
-      const result: any = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-      });
-
-      if (result.error) {
-        console.error(result.error);
-      } else {
-        router.push('/profile');
-      }
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+  }
   return (
-    <div className="flex h-screen items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-md shadow-md"
-      >
-        <div className="mb-4">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full border border-gray-300 px-3 py-2 rounded" // Added border
-          />
+    <div className="flex flex-col min-h-screen justify-center items-center p-4 sm:p-6 lg:p-8">
+      <div className=" w-full max-w-md flex flex-col ">
+        <div className=" mb-4">
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-center">
+            Welcome Back !
+          </h4>
+          <p className="leading-7 [&:not(:first-child)] text-center mt-3">
+            We're so excited to see you again!
+          </p>
         </div>
-        <div className="mb-4">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full border border-gray-300 px-3 py-2 rounded" // Added border
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded mb-4"
-        >
-          Sign In
-        </button>{' '}
-        <button type="submit" onClick={handleGoogleSignIn}>
-          Google
-        </button>
-      </form>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className=" flex flex-col gap-8"
+          >
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input placeholder="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className=" flex flex-col gap-5">
+              <Link
+                href={{
+                  pathname: '/',
+                }}
+                className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-bold"
+              >
+                Forgot password?
+              </Link>
+              <Button type="submit" className=" w-full">
+                Log in
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 }

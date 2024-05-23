@@ -128,8 +128,6 @@ export default function SignUpPage() {
       console.log(error);
     }
     router.push('/sign-in');
-
-    // Proceed with signup data...
   }
   return (
     <div className="flex flex-col min-h-screen justify-center items-center p-4 sm:p-6 lg:p-8">
@@ -178,7 +176,7 @@ export default function SignUpPage() {
                 </FormItem>
               )}
             />
-            <p className="leading-7 [&:not(:first-child)]:mt-6">
+            <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Date of Birth
             </p>
             <div className=" flex flex-row justify-between gap-3">
