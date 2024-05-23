@@ -54,7 +54,20 @@ export default function SignInPage() {
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    try {
+      const result: any = signIn('credentials', {
+        redirect: false,
+        email: values.email,
+        password: values.password,
+      });
+      if (result.error) {
+        console.error(result.error);
+      } else {
+        router.push('/profile');
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
   }
   return (
     <div className="flex flex-col min-h-screen justify-center items-center p-4 sm:p-6 lg:p-8">
@@ -115,10 +128,14 @@ export default function SignInPage() {
                 or continue with
               </p>
               <div className=" flex flex-row justify-center gap-3">
-                <Button size="lg" className=" rounded-full p-2" onClick={ handleGoogleSignIn}>
+                <Button
+                  size="lg"
+                  className=" rounded-full p-2"
+                  onClick={handleGoogleSignIn}
+                >
                   <GoogleIcon />
                 </Button>
-                <Button size="lg" className=" rounded-full p-2">
+                <Button size="lg" className=" rounded-full p-2" disabled>
                   <GitHubIcon />
                 </Button>
               </div>
